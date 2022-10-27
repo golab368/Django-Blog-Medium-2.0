@@ -1,0 +1,21 @@
+{% extends "web/layout.html" %}
+{% block body %}
+{% load crispy_forms_tags %}
+<div class="container">
+    <h2>Register</h2>
+    {% if message %}
+    <div>{{ message }}</div>
+    {% endif %}
+    <div class="card-body">
+        <form method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            {{form|crispy}}
+          </div>
+          <br>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    Already have an account? <a href="{% url 'class_login_view' %}">Log In here.</a>
+</div>
+{% endblock %}
