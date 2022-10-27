@@ -9,16 +9,23 @@ from .views import (
     Logout,
     ArticleCreateView,
     EditArticle,
+    WrittenStories
     )
-
+#login_required
+from django.contrib.auth.decorators import login_required
 urlpatterns = [
-    # path('', views.home, name='home'),
-    # path("login", views.login_view, name="login_view"),
-    # path("logout_view", views.logout_view, name="logout_view"),
-    # path("register", views.register, name="register"),
-    path("create_article", ArticleCreateView.as_view(template_name = "web/create_article.html"), name="create_article"),
+    path(
+        '',
+        HomeView.as_view(template_name='web/home.html'),
+        name='home',
+        ),
+    path(
+        "create_article",
+        ArticleCreateView.as_view(template_name = "web/create_article.html"),
+        name="create_article"
+        ),
     path("tag/<slug:slug>/", views.tagged, name="tagged"),
-    path("edit/<int:pk>/", EditArticle.as_view(template_name = "web/update_article.html"), name="edit_article"),
+    path("edit/<int:pk>/", login_required(EditArticle.as_view(template_name = "web/update_article.html")), name="edit_article"),
     path('article_detail/<int:pk>/', views.article_detail, name='article_detail'),
     path('like/<int:pk>', views.like, name='like'),
     path('follow/<int:pk>/', views.follow, name='follow'),
@@ -27,22 +34,26 @@ urlpatterns = [
     path('edit_profile', views.edit_user_info, name='edit_user_info'),
     path('create_user_info', views.create_user_info, name='create_user_info'),
     path('about', OurStory.as_view(), name='our_story'),
-    path('written', views.written_stories, name='written_stories'),
-    path('',
-        HomeView.as_view(template_name='web/home.html'),
-        name='home',
+    path(
+        'written',
+        login_required(WrittenStories.as_view(template_name = "web/written_stories.html")),
+        name='written_stories'
         ),
-    path('register',
-        RegisterView.as_view(template_name='web/class_register.html'),
+
+    path(
+        'register',
+        RegisterView.as_view(template_name='web/register.html'),
         name='class_register_view',
         ),
-    path('login',
-        Login.as_view(template_name='web/class_login.html'),
-        name='class_login_view',
+    path(
+        'login',
+        Login.as_view(template_name='web/login.html'),
+        name='login_view',
         ),
-    path('logout',
+    path(
+        'logout',
         Logout.as_view(),
-        name='class_logout',
+        name='logout',
         ),
 
 

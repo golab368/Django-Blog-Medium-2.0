@@ -161,3 +161,5 @@ MEDIA_URL = '/images/'
 django_heroku.settings(locals())
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = 'login_view'

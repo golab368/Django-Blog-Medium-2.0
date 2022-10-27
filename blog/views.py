@@ -137,36 +137,6 @@ class EditArticle(UpdateView):
             messages.error(self.request, f'Something went wrong!')
             # To bylo return HttpResponseRedirect(reverse_lazy('edit_article'))
             return HttpResponseRedirect(reverse('edit_article', args=[str(self.pk)]))
-# @login_required
-# def edit_article(request, pk):
-#     article = get_object_or_404(Article, pk=pk)
-
-#     if request.method == "POST":
-
-#         form = ArticleForm(request.POST, instance=article)
-#         try:
-#             if form.is_valid():
-#                 save_post = form.save(commit=False)
-#                 save_post.article_author = request.user
-#                 save_post.slug = slugify(save_post.headline)
-#                 save_post.save()
-#                 form.save_m2m()
-#                 messages.success(
-#                     request, ('Your article was successfully updated!'))
-#                 return HttpResponseRedirect(reverse_lazy("home"))
-#         except IntegrityError as err:
-#             messages.error(request, f'Something went wrong!')
-#             # To bylo return HttpResponseRedirect(reverse_lazy('edit_article'))
-#             return HttpResponseRedirect(reverse('edit_article', args=[str(pk)]))
-#     else:
-#         form = ArticleForm(instance=article)
-
-#     context = {
-#         "article": article,
-#         "form": form,
-
-#     }
-#     return render(request, 'web/update_article.html', context)
 
 @login_required
 def article_detail(request, pk):
@@ -342,25 +312,42 @@ def edit_user_info(request):
     return render(request, 'web/update_user_info.html', context)
 
 
-@login_required
-def written_stories(request):
-    articles = (
-        Article.objects.filter(
-            article_author=request.user).order_by("-timestamp")
-    )
+# @login_required
+# def written_stories(request):
+#     articles = (
+#         Article.objects.filter(
+#             article_author=request.user).order_by("-timestamp")
+#     )
 
-    paginator = Paginator(articles, 5)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
-    common_tags = Article.tag.most_common()[:5]
-    all_users = UserProfile.objects.all()
+#     paginator = Paginator(articles, 5)
+#     page_number = request.GET.get("page")
+#     page_obj = paginator.get_page(page_number)
+#     common_tags = Article.tag.most_common()[:5]
+#     all_users = UserProfile.objects.all()
 
-    context = {
-        "page_obj": page_obj,
-        "common_tags": common_tags,
-        "all_users": all_users,
-    }
-    return render(request, "web/written_stories.html", context)
+#     context = {
+#         "page_obj": page_obj,
+#         "common_tags": common_tags,
+#         "all_users": all_users,
+#     }
+#     return render(request, "web/written_stories.html", context)
+
+class WrittenStories(ListView):
+    model = Article
+    paginate_by = 5
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        queryset = Article.objects.filter(
+            article_author=self.request.user
+            ).order_by("-timestamp")
+        all_users = UserProfile.objects.all()
+        common_tags = Article.tag.most_common()[:5]
+
+        return super().get_context_data(
+            object_list=queryset,
+            all_users = all_users,
+            common_tags=common_tags,
+            **kwargs)
 
 #Register, Loging, Logout
 
