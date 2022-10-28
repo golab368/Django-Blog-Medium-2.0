@@ -61,12 +61,11 @@
                 </div>
 
                 <div class="p-2">
-                    <p>Created by:
-                        {% for i in all_users %}
-                        {% if i.profile.id == article.article_author.id  %}
-                        <img class="rounded" src="{{i.user_photo }}" alt="Your profile photo" width="40">
-                        {% endif %}
-                        {% endfor %}
+                    <p>Profile created by:
+
+                        {{article.article_author}}
+                        <img class="rounded" src="{{article.user_photo }}" alt="Your profile photo" width="40">
+
                         {{article.article_author.first_name}} {{article.article_author.last_name}}
                     </p>
                 </div>
@@ -78,7 +77,7 @@
                     </a>
                 </div>
                 <div class="p-2">
-                    <form action="{% url 'delete' %}" method="POST">
+                    <form action="{% url 'delete' article.pk %}" method="POST">
                         {% csrf_token %}
                         <button class="btn btn-danger" type="submit" name="article_id" value="{{ article.pk }}">
                             Delete

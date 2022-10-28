@@ -8,13 +8,12 @@
         </span>
         <div class="card-body">
             {% for comment in comments %}
+
             <div class="card-body" style="width: 50%;">
-                <h5 class="card-title">Created by:
-                    {% for i in all_users %}
-                    {% if i.profile.id == article.article_author.id  %}
-                    <img class="rounded" src="{{i.user_photo }}" alt="Your profile photo" width="40">
-                    {% endif %}
-                    {% endfor %}
+                <h5 class="card-title">Comment created by:
+
+                    <img class="rounded" src="{{comment.user.user_photo }}" alt="Your profile photo" width="40">
+
                     {{ comment.user }}
                 </h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{comment.comment_content}}</h6>

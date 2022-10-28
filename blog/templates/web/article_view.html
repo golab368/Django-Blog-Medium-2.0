@@ -2,7 +2,7 @@
 <div class="card col-sm-12 mb-3">
     <div class="card">
         <div class="card-header" style="background-color: #ffffff;">
-            
+
             {% for i in all_users %}
             {% if i.profile.id == article.article_author.id  %}
             <img class="rounded" src="{{i.user_photo }}" alt="Your profile photo" width="40">
