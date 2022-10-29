@@ -97,7 +97,6 @@ class EditArticle(UpdateView):
 
 class ArticleDetail(DetailView):
     model = Article
-    #form_class = CommentForm
 
     def get_object(self, **kwargs):
         pk = self.kwargs.get("pk")
@@ -105,15 +104,6 @@ class ArticleDetail(DetailView):
         return view_article
 
     def get_context_data(self, **kwargs):
-        # queryset = Article.objects.filter(article_author=self.request.user).order_by(
-        #     "-timestamp"
-        # )
-        # all_users = UserProfile.objects.all()
-        # common_tags = Article.tag.most_common()[:5]
-
-        # return super().get_context_data(
-        #     object_list=queryset, all_users=all_users, common_tags=common_tags, **kwargs
-        # )
         article = self.get_object()
         comments = article.comment.filter()
         likes = article.likes.filter()
@@ -140,7 +130,6 @@ class ArticleDetail(DetailView):
             comment_form = comment_form,
         )
 
-
     def post(self, request, *args, **kwargs):
         comment_form = CommentForm(data=request.POST)
         new_comment = comment_form.save(commit=False)
@@ -148,61 +137,7 @@ class ArticleDetail(DetailView):
         new_comment.article = self.get_object()
         new_comment.save()
         return self.get(self, request, *args, **kwargs)
-    # def form_valid(self, form):
-    #         new_comment = form.save(commit=False)
-    #         new_comment.post = self.get_object()
-    #         return super(ArticleDetail, self).form_valid(form)
 
-    # def form_valid(self, form):
-    #     new_comment = form.save(commit=False)
-    #     new_comment.user = self.request.user
-    #     new_comment.article = self.article
-    #     new_comment.save()
-
-
-
-# @login_required
-# def article_detail(request, pk):
-#     article = get_object_or_404(Article, pk=pk)
-#     comments = article.comment.filter()
-#     likes = article.likes.filter()
-#     all_users = UserProfile.objects.all()
-#     #created_by = Article.objects.get(pk=pk)
-#     new_comment = None
-#     liked = False
-#     if article.likes.filter(id=request.user.id).exists():
-#         liked = True
-
-#     follow_checker = [
-#         True
-#         if int(article.article_author.id)
-#         in [i.follow_writter_id for i in Follow.objects.filter(user=request.user)]
-#         else False
-#     ][0]
-
-#     if request.method == "POST":
-#         comment_form = CommentForm(data=request.POST)
-#         if comment_form.is_valid():
-#             new_comment = comment_form.save(commit=False)
-#             new_comment.user = request.user
-#             new_comment.article = article
-#             new_comment.save()
-#     else:
-#         comment_form = CommentForm()
-
-#     context = {
-#         "article": article,
-#         "comments": comments,
-#         "new_comment": new_comment,
-#         "comment_form": comment_form,
-#         "likes": likes,
-#         "liked": liked,
-#         "follow_checker": follow_checker,
-#         "all_users": all_users,
-#         #"created_by":created_by,
-#     }
-
-#     return render(request, "web/article_detail_view.html", context)
 
 #MESSAGE DOES NOT WORK HERE TO FIX!!!!
 class DeleteView(DeleteView):
@@ -214,15 +149,6 @@ class DeleteView(DeleteView):
         response = super(DeleteView, self).delete(request, *args, **kwargs)
         messages.success(request, ("Your article was successfully deleted!"))
         return response
-
-# def delete(request):
-#     article_to_delete = get_object_or_404(Article, id=request.POST.get("article_id"))
-#     if request.method == "POST" and request.user.is_authenticated:
-#         article_to_delete.delete()
-#         messages.success(request, ("Your article was successfully deleted!"))
-#     else:
-#         messages.warning(request, ("Something went wrong!"))
-#     return HttpResponseRedirect(reverse_lazy("home"))
 
 
 def like(request, pk):
@@ -260,24 +186,23 @@ def follow(request, pk):
 
     return HttpResponseRedirect(reverse("article_detail", args=[int(pk)]))
 
+class ProfileView(View):
 
-@login_required
-def profile(request):
-    user_info = UserProfile.objects.filter(profile=request.user)
-    user_followers = [
-        str(all_users.follow_writter_id) for all_users in Follow.objects.all()
-    ].count(str(request.user.id))
-    user_follow = [
-        i.follow_writter_id for i in Follow.objects.filter(user=request.user.id)
-    ]
-    print(user_follow)
+    def get(self, request):
+        user_info = UserProfile.objects.filter(profile=request.user)
+        user_followers = [
+            str(all_users.follow_writter_id) for all_users in Follow.objects.all()
+        ].count(str(request.user.id))
+        user_follow = [
+            i.follow_writter_id for i in Follow.objects.filter(user=request.user.id)
+        ]
 
-    context = {
-        "user_followers": user_followers,
-        "user_info": user_info,
-        "user_follow": user_follow,
-    }
-    return render(request, "web/profile.html", context)
+        context = {
+            "user_followers": user_followers,
+            "user_info": user_info,
+            "user_follow": user_follow,
+        }
+        return render(self.request, "web/profile.html", context)
 
 
 @login_required

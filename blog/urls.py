@@ -6,6 +6,7 @@ from .views import (
     HomeView,
     Login,
     OurStory,
+    ProfileView,
     RegisterView,
     Logout,
     ArticleCreateView,
@@ -57,7 +58,10 @@ urlpatterns = [
         login_required(DeleteView.as_view()),
             name='delete'
             ),
-    path('profile', views.profile, name='profile'),
+    path('profile',
+        login_required(ProfileView.as_view()),
+        name='profile'
+        ),
     path('edit_profile', views.edit_user_info, name='edit_user_info'),
     path('create_user_info', views.create_user_info, name='create_user_info'),
     path('about', OurStory.as_view(), name='our_story'),
