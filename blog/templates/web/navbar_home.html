@@ -1,3 +1,4 @@
+{% load i18n %}
 <nav class="navbar navbar-dark bg-dark">
   <div class="container-fluid">
     <a href="{% url 'home' %}" class="navbar-brand">Medium</a>
@@ -37,6 +38,7 @@
         <a class="btn btn-secondary" href="{% url 'register' %}">Get started</a>
       </li>
       {% else %}
+
       <li class="nav-item">
         <a
           class="nav-link active text-white"
@@ -49,6 +51,22 @@
         <a class="btn btn-secondary" href="{% url 'logout' %}">Log out</a>
       </li>
       {% endif %}
+
+
+      {% get_current_language as LANGUAGE_CODE %}
+      <form action="{% url 'set_language' %}" method="post" >
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ redirect_to }}" />
+          <li class="nav-item">
+            <button name="language" type="submit" value="en" class="language_b"><img src="https://www.svgrepo.com/show/134595/united-kingdom.svg" width="20" height="20"></button>
+              
+          </li>
+          <li class="nav-item">
+            <button name="language" type="submit" value="pl" class="language_b"><img src="https://www.svgrepo.com/show/242317/poland.svg"  width="20" height="20"></button>
+              
+          </li>
+
+      </form>
     </ul>
   </div>
 </nav>

@@ -1,4 +1,5 @@
 from django.urls import path
+
 from django.contrib import admin
 from . import views
 from .views import (
@@ -11,14 +12,16 @@ from .views import (
     Logout,
     ArticleCreateView,
     EditArticle,
+    #EditUserView,
     Tagged,
     WrittenStories,
     DeleteView,
     ArticleDetail,
+    ProfileCreateView,
     )
-
-
 from django.contrib.auth.decorators import login_required
+
+
 urlpatterns = [
     path(
         '',
@@ -62,8 +65,15 @@ urlpatterns = [
         login_required(ProfileView.as_view()),
         name='profile'
         ),
+    #path('edit_profile', EditUserView.as_view(template_name = "web/update_user_info.html"), name='edit_user_info'),
     path('edit_profile', views.edit_user_info, name='edit_user_info'),
-    path('create_user_info', views.create_user_info, name='create_user_info'),
+    path(
+        'create_user_info',
+        login_required(ProfileCreateView.as_view(
+            template_name = "web/create_user_info.html"
+            )),
+        name='create_user_info'
+        ),
     path('about', OurStory.as_view(), name='our_story'),
     path(
         'written',

@@ -19,6 +19,8 @@ class Article(models.Model):
     article_image_upload = models.ImageField(blank=True, upload_to="images/")
     slug = models.SlugField(null=True, unique=True, max_length=100)
     tag = TaggableManager(blank=True)
+    #likes = models.ManyToManyField(User, defaulf=None, blank=True, related_name="article_likes")
+    #favourite = models.ManyToManyField(User, defaulf=None, blank=True, related_name="article_favourite")
     likes = models.ManyToManyField(User, related_name="article_likes")
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -48,6 +50,7 @@ class UserProfile(models.Model):
             "profile": self.profile,
             "about_user": self.about_user,
             "user_photo": self.user_photo,
+            "email" : self.profile.email,
             "articles_instance": self.articles_instance,
         }
 

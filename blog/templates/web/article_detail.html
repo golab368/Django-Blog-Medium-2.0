@@ -17,6 +17,8 @@
             <p class="mb-auto">{{article.article_image_upload}}</p>
             <br>
             <br>
+            <button id="like-button" value="{{article.pk}}" > like</button>
+            <br>
             <div class="d-flex">
                 <div class="p-2 flex-grow-2">
                     <form action="{% url 'like' article.pk %}" method="POST">

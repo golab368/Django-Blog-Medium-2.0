@@ -1,3 +1,4 @@
+import email
 from gc import get_objects
 from multiprocessing import context
 from django.shortcuts import render, get_object_or_404
@@ -10,8 +11,10 @@ from django.views.generic import (
     UpdateView,
     ListView,
     DeleteView,
-)
+    FormView,
 
+)
+from multi_form_view import MultiModelFormView
 # from django.views.generic.list import ListView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
@@ -204,25 +207,61 @@ class ProfileView(View):
         }
         return render(self.request, "web/profile.html", context)
 
+class ProfileCreateView(CreateView):
+    form_class = UserProfileForm
 
-@login_required
-def create_user_info(request):
-    form = UserProfileForm(request.POST)
-    if request.method == "POST":
-        if form.is_valid():
+    def form_valid(self, form):
+        try:
             save_user_info = form.save(commit=False)
-            save_user_info.profile = request.user
+            save_user_info.profile = self.request.user
             save_user_info.save()
-            messages.success(request, ("Your User info was successfully added!"))
+            messages.success(self.request, ("Your User info was successfully added!"))
             return redirect(to="profile")
-        else:
-            messages.error(request, f"Something went wrong!")
+        except:
+            messages.error(self.request, f"Something went wrong!")
             return redirect(to="profile")
 
-    context = {
-        "form": form,
-    }
-    return render(request, "web/create_user_info.html", context)
+
+# class EditUserView(FormView):
+    # form_classes = {
+    #     'user_form' : UserForm,
+    #     'profile_form' : UserProfileForm,
+    # }
+
+    # def get_success_url(self):
+    #     return reverse('profile')
+
+    # def forms_valid(self, forms):
+    #     user = forms['user_form'].save(commit=False)
+    #     user_profile =forms['profile_form'].save(commit=False)
+    #     return super(EditUserView, self).forms_valid(forms)
+
+    # def get(self, request, *args, **kwargs):
+    #     user_form = get_object_or_404(User, id=request.user.id)
+    #     user_form.prefix = 'user_form'
+    #     profile_form = get_object_or_404(UserProfile, profile=request.user)
+    #     profile_form.prefix = 'profile_form'
+    #     # Use RequestContext instead of render_to_response from 3.0
+    #     super().get_context_data(
+    #         user_form=user_form, profile_form=profile_form
+    #     )
+
+    # def post(self, request, *args, **kwargs):
+    #     user_form = UserForm(self.request.POST, prefix='user_form')
+    #     profile_form = UserProfileForm(self.request.POST, prefix='profile_form ')
+
+    #     if user_form.is_valid() and profile_form.is_valid():
+    #         ### do something
+    #         return HttpResponseRedirect("profile")
+    #     else:
+    #         return self.form_invalid(user_form,profile_form , **kwargs)
+
+
+    # def form_invalid(self, user_form, profile_form, **kwargs):
+    #     user_form.prefix='user_form'
+    #     profile_form.prefix='profile_form'
+
+    #     return self.render_to_response(self.get_context_data({'user_form': user_form, 'profile_form': profile_form}))
 
 
 @login_required
@@ -290,3 +329,4 @@ class Logout(LogoutView):
     def get(self, request):
         logout(request)
         return HttpResponseRedirect(reverse("home"))
+

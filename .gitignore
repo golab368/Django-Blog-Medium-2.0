@@ -1,9 +1,8 @@
-logs
+logs/
 .env
 env
-__pycashe__
+__pycache__/
 .venv
-tests
 htmlcov
 .coverage
 db.sqlite3

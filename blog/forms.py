@@ -1,7 +1,8 @@
 from django import forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Article, Comment, UserProfile
-from django.contrib.auth.forms import UserCreationForm
 
 class ArticleForm(forms.ModelForm):
     """Form for the image model"""
@@ -17,7 +18,7 @@ class CommentForm(forms.ModelForm):
         fields = ("comment_content",)
 
 class UserForm(forms.ModelForm):
-    email = forms.EmailField(required=True,label="Updated email address if different",
+    email = forms.EmailField(required=False,label="Updated email address if different",
                              widget=forms.TextInput(attrs={'class': 'form-control'}))
     class Meta:
         model = User
@@ -30,7 +31,7 @@ class UserProfileForm(forms.ModelForm):
 
 
 
-from django.contrib.auth import get_user_model
+
 
 
 # Sign Up Form
