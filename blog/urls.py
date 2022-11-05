@@ -20,7 +20,7 @@ from .views import (
     ProfileCreateView,
     )
 from django.contrib.auth.decorators import login_required
-
+from django.utils.translation import gettext_lazy as _
 
 urlpatterns = [
     path(
@@ -74,7 +74,7 @@ urlpatterns = [
             )),
         name='create_user_info'
         ),
-    path('about', OurStory.as_view(), name='our_story'),
+    path(_('about'), OurStory.as_view(), name='our_story'),
     path(
         'written',
         login_required(
